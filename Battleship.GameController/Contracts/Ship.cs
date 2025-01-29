@@ -47,6 +47,11 @@ namespace Battleship.GameController.Contracts
         /// </summary>
         public int Size { get; set; }
 
+        /// <summary>
+        /// Gets or sets if the shp is sunk.
+        /// </summary>
+        public bool IsSunk { get; set; }
+
         #endregion
 
         #region Public Methods and Operators

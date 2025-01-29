@@ -47,9 +47,60 @@ namespace Battleship.GameController
                 {
                     if (position.Equals(shot))
                     {
+                        position.IsHit = true;
                         return true;
                     }
                 }
+            }
+
+            return false;
+        }
+
+        public static bool CheckIsSunk(Ship ship)
+        {
+            if (ship == null)
+            {
+                throw new ArgumentNullException("ship");
+            }
+            if (ship.Positions.Any(x => x.IsHit == false))
+            {
+                return false;
+            }
+            ship.IsSunk = true;
+            return true;
+        }
+
+        public static bool CheckGameOver(IEnumerable<Ship> goodships, IEnumerable<Ship> badships)
+        {
+            if (goodships == null)
+            {
+                throw new ArgumentNullException("ships");
+            }
+            if (badships == null)
+            {
+                throw new ArgumentNullException("ships");
+            }
+            if (goodships.All(x => x.Positions.All(s => s.IsHit == true)))
+            {
+                var currentColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine($"You Lost!");
+                Console.ForegroundColor = currentColor;
+                return true;
+            }
+            if (badships.All(x => x.Positions.All(s => s.IsHit == true)))
+            {
+                var currentColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine($"You Won!");
+                Console.ForegroundColor = currentColor;
+                return true;
             }
 
             return false;
@@ -65,10 +116,10 @@ namespace Battleship.GameController
         {
             return new List<Ship>()
                        {
-                           new Ship() { Name = "Aircraft Carrier", Size = 5, Color = ConsoleColor.Blue }, 
-                           new Ship() { Name = "Battleship", Size = 4, Color = ConsoleColor.Red }, 
-                           new Ship() { Name = "Submarine", Size = 3, Color = ConsoleColor.Gray }, 
-                           new Ship() { Name = "Destroyer", Size = 3, Color = ConsoleColor.Yellow }, 
+                           new Ship() { Name = "Aircraft Carrier", Size = 5, Color = ConsoleColor.Blue },
+                           new Ship() { Name = "Battleship", Size = 4, Color = ConsoleColor.Red },
+                           new Ship() { Name = "Submarine", Size = 3, Color = ConsoleColor.Gray },
+                           new Ship() { Name = "Destroyer", Size = 3, Color = ConsoleColor.Yellow },
                            new Ship() { Name = "Patrol Boat", Size = 2, Color = ConsoleColor.Green }
                        };
         }
@@ -95,5 +146,5 @@ namespace Battleship.GameController
             var position = new Position(letter, number);
             return position;
         }
-     }
+    }
 }
