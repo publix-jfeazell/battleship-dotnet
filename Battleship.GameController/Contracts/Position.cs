@@ -43,6 +43,11 @@
         /// </summary>
         public int Row { get; set; }
 
+        /// <summary>
+        ///     Gets or sets if the position is hit.
+        /// </summary>
+        public bool IsHit { get; set; }
+
         #endregion
 
         #region Public Methods and Operators
