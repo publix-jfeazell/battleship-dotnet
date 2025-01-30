@@ -19,6 +19,7 @@ namespace Battleship.Ascii
         private static ITelemetryClient telemetryClient;
         private static ConsoleColor defaultColor = ConsoleColor.White;
         private static bool IsGameOver = false;
+        public static int PlayerWon = 0;
 
         static void Main()
         {
@@ -80,7 +81,7 @@ namespace Battleship.Ascii
             {
                 Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine("--------------- PLAYER ONE TURN ---------------");
-                IsGameOver = PlayerOneTurn();
+                IsGameOver = PlayerOneTurn(out int playerWon);
                 Console.ForegroundColor = ConsoleColor.Magenta;
                 if (!IsGameOver)
                 {
@@ -89,6 +90,14 @@ namespace Battleship.Ascii
                 }
             }
             while (!IsGameOver);
+
+            if (PlayerWon == 1)
+            {
+                int coinsWon = new Random().Next(1, 5);
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine($"In recognition of your extreme competence, you have earned {coinsWon} gold coins for this battle.");
+            }
+
             Console.ForegroundColor = defaultColor;
             Console.WriteLine("Game is Over!");
             Console.WriteLine("Do you want to play again? Y or N");
@@ -145,7 +154,7 @@ namespace Battleship.Ascii
             InitializeEnemyFleet();
         }
 
-        private static bool PlayerOneTurn()
+        private static bool PlayerOneTurn(out int playerWon)
         {
             Console.ForegroundColor = defaultColor;
             Console.WriteLine();
@@ -208,7 +217,7 @@ namespace Battleship.Ascii
             }
             Console.WriteLine();
 
-            return GameController.CheckGameOver(myFleet, enemyFleet);
+            return GameController.CheckGameOver(myFleet, enemyFleet, out playerWon);
         }
 
         private static bool PlayerTwoTurn()

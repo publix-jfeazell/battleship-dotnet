@@ -70,8 +70,10 @@ namespace Battleship.GameController
             return true;
         }
 
-        public static bool CheckGameOver(IEnumerable<Ship> goodships, IEnumerable<Ship> badships)
+        public static bool CheckGameOver(IEnumerable<Ship> goodships, IEnumerable<Ship> badships, out int playerWon)
         {
+            playerWon = 0;
+
             if (goodships == null)
             {
                 throw new ArgumentNullException("ships");
@@ -89,6 +91,7 @@ namespace Battleship.GameController
                 Console.WriteLine();
                 Console.WriteLine($"You Lost!");
                 Console.ForegroundColor = currentColor;
+                playerWon = 2;
                 return true;
             }
             if (badships.All(x => x.Positions.All(s => s.IsHit == true)))
@@ -100,6 +103,7 @@ namespace Battleship.GameController
                 Console.WriteLine();
                 Console.WriteLine($"You Won!");
                 Console.ForegroundColor = currentColor;
+                playerWon = 1;
                 return true;
             }
 
