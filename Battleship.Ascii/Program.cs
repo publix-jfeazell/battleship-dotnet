@@ -19,6 +19,7 @@ namespace Battleship.Ascii
         private static ITelemetryClient telemetryClient;
         private static ConsoleColor defaultColor = ConsoleColor.White;
         private static bool IsGameOver = false;
+        private static int Wallet = 100;
 
         static void Main()
         {
@@ -47,7 +48,6 @@ namespace Battleship.Ascii
                 Console.WriteLine();
 
                 InitializeGame();
-
                 StartGame();
             }
             catch (Exception e)
@@ -64,17 +64,7 @@ namespace Battleship.Ascii
         private static void StartGame()
         {
             Console.Clear();
-            Console.WriteLine("                  __");
-            Console.WriteLine(@"                 /  \");
-            Console.WriteLine("           .-.  |    |");
-            Console.WriteLine(@"   *    _.-'  \  \__/");
-            Console.WriteLine(@"    \.-'       \");
-            Console.WriteLine("   /          _/");
-            Console.WriteLine(@"  |      _  /""");
-            Console.WriteLine(@"  |     /_\'");
-            Console.WriteLine(@"   \    \_/");
-            Console.WriteLine(@"    """"""""");
-            Console.Clear();
+            Console.WriteLine($"Welcome to the battle. Your current account balance is {Wallet} gold coins. Good luck!");
 
             int playerWon = 2;
             do
@@ -98,14 +88,16 @@ namespace Battleship.Ascii
             if (playerWon == 1)
             {
                 int coinsWon = new Random().Next(1, 5);
+                Wallet += coinsWon;
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"In recognition of your extreme competence, you have earned {coinsWon} gold coins for this exploit!");
+                Console.WriteLine($"In recognition of your extreme competence, you have earned {coinsWon} gold coins for this exploit! You now have {Wallet} gold coins.");
             }
             else
             {
                 int coinsLost = new Random().Next(1, 5);
+                Wallet -= coinsLost;
                 Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine($"To admonish your extreme lack of skill, you have been fined {coinsLost} gold coins for this failure!");
+                Console.WriteLine($"To admonish your extreme lack of skill, you have been fined {coinsLost} gold coins for this failure! You now have {Wallet} gold coins.");
             }
 
             Console.ForegroundColor = defaultColor;
