@@ -95,7 +95,13 @@ namespace Battleship.Ascii
             {
                 int coinsWon = new Random().Next(1, 5);
                 Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine($"In recognition of your extreme competence, you have earned {coinsWon} gold coins for this battle.");
+                Console.WriteLine($"In recognition of your extreme competence, you have earned {coinsWon} gold coins for this exploit!");
+            }
+            else
+            {
+                int coinsLost = new Random().Next(1, 5);
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine($"To admonish your extreme lack of skill, you have been fined {coinsLost} gold coins for this failure!");
             }
 
             Console.ForegroundColor = defaultColor;
