@@ -59,6 +59,8 @@ namespace Battleship.Ascii
 
         private static void StartGame()
         {
+            var currentColor = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Blue;
             Console.Clear();
             Console.WriteLine("                  __");
             Console.WriteLine(@"                 /  \");
@@ -73,6 +75,7 @@ namespace Battleship.Ascii
 
             do
             {
+                Console.ForegroundColor = ConsoleColor.Blue;
                 Console.WriteLine();
                 Console.WriteLine("Player, it's your turn");
                 Console.WriteLine("Enter coordinates for your shot :");
@@ -86,8 +89,9 @@ namespace Battleship.Ascii
                     }
                     catch
                     {
-
+                        Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.WriteLine("Invalid Position Please try again!");
+                        Console.ForegroundColor = currentColor;
                     }
                 }
                 while (true);
@@ -99,6 +103,7 @@ namespace Battleship.Ascii
                 {
                     Console.Beep();
 
+                    Console.ForegroundColor = ConsoleColor.Blue;
                     Console.WriteLine(@"                \         .  ./");
                     Console.WriteLine(@"              \      .:"";'.:..""   /");
                     Console.WriteLine(@"                  (M^^.^~~:.'"").");
@@ -107,7 +112,6 @@ namespace Battleship.Ascii
                     Console.WriteLine(@"            -   (\- |  \ /  |  /)  -");
                     Console.WriteLine(@"                 -\  \     /  /-");
                     Console.WriteLine(@"                   \  \   /  /");
-                    var currentColor = Console.ForegroundColor;
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("Yeah ! Nice hit !");
                     Console.ForegroundColor = currentColor;
@@ -124,7 +128,6 @@ namespace Battleship.Ascii
                 }
                 else
                 {
-                    var currentColor = Console.ForegroundColor;
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Miss!");
                     Console.ForegroundColor = currentColor;
@@ -138,7 +141,7 @@ namespace Battleship.Ascii
                 if (isHit)
                 {
                     Console.Beep();
-
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine(@"                \         .  ./");
                     Console.WriteLine(@"              \      .:"";'.:..""   /");
                     Console.WriteLine(@"                  (M^^.^~~:.'"").");
@@ -147,8 +150,7 @@ namespace Battleship.Ascii
                     Console.WriteLine(@"            -   (\- |  \ /  |  /)  -");
                     Console.WriteLine(@"                 -\  \     /  /-");
                     Console.WriteLine(@"                   \  \   /  /");
-                    var currentColor = Console.ForegroundColor;
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Yeah ! Nice hit !");
                     Console.ForegroundColor = currentColor;
 
@@ -164,13 +166,13 @@ namespace Battleship.Ascii
                 }
                 else
                 {
-                    var currentColor = Console.ForegroundColor;
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Miss!");
                     Console.ForegroundColor = currentColor;
                 }
             }
             while (!GameController.CheckGameOver(myFleet, enemyFleet));
+            Console.ForegroundColor = currentColor;
             Console.WriteLine("Game is Over!");
             Console.WriteLine("Do you want to play again? Y or N");
             var answer = "";
@@ -248,7 +250,7 @@ namespace Battleship.Ascii
                         if (Char.IsDigit(position[1]))
                         {
                             int numericValue = (int)Char.GetNumericValue(position[1]);
-                            if (position.Length == 2 && charSet.Contains(Char.ToUpper(charToCheck)) && (numericValue >= 1 && numericValue <= 8) && myFleet.Any(x => x.Positions.Any(s => Char(s.Column) == Char.ToUpper(position[0]))))
+                            if (position.Length == 2 && charSet.Contains(Char.ToUpper(charToCheck)) && (numericValue >= 1 && numericValue <= 8) && !myFleet.Any(x => x.Positions.Any(s => s.Column.ToString()[0] == Char.ToUpper(position[0]) && s.Row == numericValue)))
                             {
                                 break;
                             }
