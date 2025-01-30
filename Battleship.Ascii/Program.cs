@@ -408,27 +408,22 @@ namespace Battleship.Ascii
         {
             enemyFleet = GameController.InitializeShips().ToList();
 
-            enemyFleet[0].Positions.Add(new Position { Column = Letters.B, Row = 4 });
-            enemyFleet[0].Positions.Add(new Position { Column = Letters.B, Row = 5 });
-            enemyFleet[0].Positions.Add(new Position { Column = Letters.B, Row = 6 });
-            enemyFleet[0].Positions.Add(new Position { Column = Letters.B, Row = 7 });
-            enemyFleet[0].Positions.Add(new Position { Column = Letters.B, Row = 8 });
+            var coords = GenerateNonOverlappingCoordinates();
 
-            enemyFleet[1].Positions.Add(new Position { Column = Letters.E, Row = 6 });
-            enemyFleet[1].Positions.Add(new Position { Column = Letters.E, Row = 7 });
-            enemyFleet[1].Positions.Add(new Position { Column = Letters.E, Row = 8 });
-            enemyFleet[1].Positions.Add(new Position { Column = Letters.E, Row = 9 });
+            foreach (var ship in enemyFleet)
+            {
+                var coordsToAdd = coords.Where(x => x.Count == ship.Size).First();
+                coords = coords.Where(x => x != coordsToAdd).ToList();
+                var newCoords = coordsToAdd.ToString();
 
-            enemyFleet[2].Positions.Add(new Position { Column = Letters.A, Row = 3 });
-            enemyFleet[2].Positions.Add(new Position { Column = Letters.B, Row = 3 });
-            enemyFleet[2].Positions.Add(new Position { Column = Letters.C, Row = 3 });
-
-            enemyFleet[3].Positions.Add(new Position { Column = Letters.F, Row = 8 });
-            enemyFleet[3].Positions.Add(new Position { Column = Letters.G, Row = 8 });
-            enemyFleet[3].Positions.Add(new Position { Column = Letters.H, Row = 8 });
-
-            enemyFleet[4].Positions.Add(new Position { Column = Letters.C, Row = 5 });
-            enemyFleet[4].Positions.Add(new Position { Column = Letters.C, Row = 6 });
+                foreach(var pos in coordsToAdd)
+                {
+                    var letter = (Letters)Enum.Parse(typeof(Letters), pos.ToUpper().Substring(0, 1));
+                    var number = int.Parse(pos.Substring(1, 1));
+                    ship.Positions.Add(new Position { Column = letter, Row = number, IsHit = false });
+                }
+                //telemetryClient.TrackEvent("Player_PlaceShipPosition", new Dictionary<string, string>() { { "Position", position }, { "Ship", ship.Name }, { "PositionInShip", i.ToString() } });
+            }
         }
 
         private static void DisplayFleetStatus(IEnumerable<Ship> playerOneFleet, IEnumerable<Ship> playerTwoFleet)
@@ -456,6 +451,106 @@ namespace Battleship.Ascii
                 Console.ForegroundColor = defaultColor;
             }
             Console.WriteLine();
+        }
+
+        static string GenerateRandomCoordinates(int numberOfCoordinates)
+        {
+            Random random = new Random();
+            List<string> coordinates = new List<string>();
+            char[] rows = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H' };
+            int[] columns = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+            bool isHorizontal = random.Next(2) == 0; // Randomly choose horizontal or vertical
+
+            if (isHorizontal)
+            {
+                // Generate horizontal line
+                int rowIndex = random.Next(rows.Length);
+                int startColumnIndex = random.Next(columns.Length - numberOfCoordinates + 1);
+
+                for (int i = 0; i < numberOfCoordinates; i++)
+                {
+                    coordinates.Add($"{rows[rowIndex]}{columns[startColumnIndex + i]}");
+                }
+            }
+            else
+            {
+                // Generate vertical line
+                int columnIndex = random.Next(columns.Length);
+                int startRowIndex = random.Next(rows.Length - numberOfCoordinates + 1);
+
+                for (int i = 0; i < numberOfCoordinates; i++)
+                {
+                    coordinates.Add($"{rows[startRowIndex + i]}{columns[columnIndex]}");
+                }
+            }
+
+            return String.Join(" ",coordinates);
+        }
+
+        static List<List<string>> GenerateNonOverlappingCoordinates()
+        {
+            int[] sizes = new[] { 5, 4, 3, 3, 2 }; 
+            Random random = new Random();
+            List<List<string>> allCoordinates = new List<List<string>>();
+            HashSet<string> usedCoordinates = new HashSet<string>();
+            char[] rows = { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H' };
+            int[] columns = { 1, 2, 3, 4, 5, 6, 7, 8 };
+
+            foreach (int size in sizes)
+            {
+                List<string> coordinates;
+                bool isValid;
+
+                do
+                {
+                    coordinates = new List<string>();
+                    isValid = true;
+                    bool isHorizontal = random.Next(2) == 0;
+
+                    if (isHorizontal)
+                    {
+                        int rowIndex = random.Next(rows.Length);
+                        int startColumnIndex = random.Next(columns.Length - size + 1);
+
+                        for (int i = 0; i < size; i++)
+                        {
+                            string coord = $"{rows[rowIndex]}{columns[startColumnIndex + i]}";
+                            if (usedCoordinates.Contains(coord))
+                            {
+                                isValid = false;
+                                break;
+                            }
+                            coordinates.Add(coord);
+                        }
+                    }
+                    else
+                    {
+                        int columnIndex = random.Next(columns.Length);
+                        int startRowIndex = random.Next(rows.Length - size + 1);
+
+                        for (int i = 0; i < size; i++)
+                        {
+                            string coord = $"{rows[startRowIndex + i]}{columns[columnIndex]}";
+                            if (usedCoordinates.Contains(coord))
+                            {
+                                isValid = false;
+                                break;
+                            }
+                            coordinates.Add(coord);
+                        }
+                    }
+                } while (!isValid);
+
+                foreach (var coord in coordinates)
+                {
+                    usedCoordinates.Add(coord);
+                }
+
+                allCoordinates.Add(coordinates);
+            }
+
+            return allCoordinates;
         }
     }
 }
