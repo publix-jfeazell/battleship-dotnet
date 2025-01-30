@@ -272,6 +272,7 @@ namespace Battleship.Ascii
                     Console.WriteLine("Enter the coordinates for your ship placements (e.g., A1 A2 A3):");
                     string input = Console.ReadLine();
 
+                    input = input.Trim();
                     // Split the input into individual coordinates
                     string[] coordinates = input.Split(' ');
 
