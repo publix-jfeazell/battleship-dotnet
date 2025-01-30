@@ -142,7 +142,6 @@ namespace Battleship.Ascii
         private static void InitializeGame()
         {
             InitializeMyFleet();
-
             InitializeEnemyFleet();
         }
 
@@ -179,7 +178,6 @@ namespace Battleship.Ascii
             if (isHit)
             {
                 Console.Beep();
-
 
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("Yeah ! Nice hit !");
